@@ -18,13 +18,15 @@ from pathlib import Path
 
 from sqlalchemy import create_engine
 
-cnx = create_engine('sqlite:///db.sqlite3').connect()
+cnx = create_engine('sqlite:///../db.sqlite3').connect()
 
 df_store_product = pd.read_sql_table('store_product', cnx)
 
+print(df_store_product)
+
 
 tfidf_title_vectorizer = TfidfVectorizer(min_df = 0)
-tfidf_title_features = tfidf_title_vectorizer.fit_transform(df_store_product['name'])
+tfidf_title_features = tfidf_title_vectorizer.fit_transform(df_store_product['product_type_name'])
 tf_idf_euclidean=[]
 def tfidf_model(doc_id, num_results):
 
@@ -41,10 +43,10 @@ def tfidf_model(doc_id, num_results):
 
 
 idf_title_vectorizer = CountVectorizer()
-idf_title_features = idf_title_vectorizer.fit_transform(df_store_product['name'])
+idf_title_features = idf_title_vectorizer.fit_transform(df_store_product['product_type_name'])
 def n_containing(word):
     # return the number of documents which had the given word
-    return sum(1 for blob in df_store_product['name'] if word in blob.split())
+    return sum(1 for blob in df_store_product['product_type_name'] if word in blob.split())
 
 def idf(word):
     # idf = log(#number of docs / #number of docs which had the given word)
@@ -67,7 +69,7 @@ def idf_model(doc_id, num_results):
 
 
 title_vectorizer = CountVectorizer()
-title_features   = title_vectorizer.fit_transform(df_store_product['name'])
+title_features   = title_vectorizer.fit_transform(df_store_product['product_type_name'])
 title_features.get_shape()
 bag_of_words_euclidean=[]
 def bag_of_words_model(doc_id, num_results):
